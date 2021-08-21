@@ -72,7 +72,7 @@ func WriteInfoToFile(path string, users resources.AllUsers) {
 	}
 }
 
-func (s Server) CheckIsUserCreated(user resources.User, users resources.AllUsers) bool {
+func CheckIsUserCreated(user resources.User, users resources.AllUsers) bool {
 	for i := range users.Users {
 		if user.Email == users.Users[i].Email {
 			return false
@@ -81,7 +81,7 @@ func (s Server) CheckIsUserCreated(user resources.User, users resources.AllUsers
 	return true
 }
 
-func (s Server) AddNewUser(user resources.User) error {
+func AddNewUser(user resources.User) error {
 	var AllUsers resources.AllUsers
 
 	rawDataIn, err := ReadInfoFromFile("users.json")
@@ -92,7 +92,7 @@ func (s Server) AddNewUser(user resources.User) error {
 
 	user = resources.User{user.Email, user.Pass}
 
-	is := s.CheckIsUserCreated(user, AllUsers)
+	is := CheckIsUserCreated(user, AllUsers)
 
 	if is == true {
 
@@ -112,7 +112,7 @@ func valid(e string) bool {
 	return emailRegex.MatchString(e)
 }
 
-func (s Server) CreateUser(w http.ResponseWriter, r *http.Request) {
+func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("context-type", "application/json")
 
@@ -145,7 +145,7 @@ func (s Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		isCreated := s.AddNewUser(user)
+		isCreated := AddNewUser(user)
 
 		if isCreated == nil {
 			w.Write([]byte("User successfully created"))
@@ -159,7 +159,7 @@ func (s Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s Server) AuthenticateUser(w http.ResponseWriter, r *http.Request) {
+func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 	var AllUsers resources.AllUsers
 
 	rawDataIn, err := ReadInfoFromFile("users.json")
