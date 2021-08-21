@@ -7,10 +7,7 @@ import (
 	"net/http"
 )
 
-
-
 type Connector struct {
-
 }
 
 func NewConnector() *Connector {
@@ -24,13 +21,14 @@ func (c *Connector) GetBTC() *resources.ResponceBTC {
 		fmt.Println("Failed")
 		return nil
 	}
+
 	var resp resources.ResponceBTC
 	err = json.NewDecoder(res.Body).Decode(&resp)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
+
+	res.Body.Close()
 	return &resp
 
-
 }
-
