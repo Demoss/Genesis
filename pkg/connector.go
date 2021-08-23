@@ -28,7 +28,10 @@ func (c *Connector) GetBTC() *resources.ResponceBTC {
 		fmt.Println(err)
 	}
 
-	res.Body.Close()
+	err = res.Body.Close()
+	if err != nil {
+		return nil
+	}
 	return &resp
 
 }

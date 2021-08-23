@@ -187,11 +187,11 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for i := 0; i < len(AllUsers.Users); i++ {
-		if user.Email != AllUsers.Users[i].Email || user.Pass != AllUsers.Users[i].Pass {
-			global.Logged = 0
-		} else {
+		if user.Email == AllUsers.Users[i].Email && user.Pass == AllUsers.Users[i].Pass {
 			global.Logged = 1
 			break
+		} else {
+			global.Logged = 0
 		}
 	}
 	if global.Logged == 1 {
