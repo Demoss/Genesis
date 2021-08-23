@@ -166,7 +166,7 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(rawDataIn, &AllUsers)
 	if err != nil {
-		println(err)
+		log.Println(err)
 	}
 	keys1, ok1 := r.URL.Query()["email"]
 	keys2, ok2 := r.URL.Query()["pass"]

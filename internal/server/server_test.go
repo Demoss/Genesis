@@ -70,7 +70,7 @@ func TestAddNewUser(t *testing.T) {
 	}{
 		{
 			name: "all right",
-			user: resources.User{Email: "hyi@gmail.com", Pass: "ss"},
+			user: resources.User{Email: "test@gmail.com", Pass: "ss"},
 			users: resources.AllUsers{Users: []resources.User{
 				{
 					Email: "sss@gmail.com",
@@ -108,13 +108,11 @@ func TestAddNewUser(t *testing.T) {
 			if !reflect.DeepEqual(tc.err, erro) {
 				tt.Errorf("expected %v, get - %v", tc.err, erro)
 			}
-
-			err := os.Remove("users.json")
-			if err != nil {
-				return
-			}
 		})
-
+		err := os.Remove("users.json")
+		if err != nil {
+			return
+		}
 	}
 
 }
@@ -176,5 +174,55 @@ func TestCreateUser(t *testing.T) {
 	err := os.Remove("users.json")
 	if err != nil {
 		return
+	}
+}
+
+func TestAuthenticateUser(t *testing.T) {
+	tests := []struct{
+		name string
+		email string
+		pass string
+		answer string
+	}{
+
+		{
+			name: "all right",
+			email: "ss@gmail.com",
+			pass: "ss",
+			answer: "You are logged in",
+		},
+		{
+			name: "fail",
+			email: "sss@gmail.com",
+			pass: "ss",
+			answer: "User doesn't exist",
+		},
+	}
+	for _,tc := range tests{
+		t.Run(tc.name, func(tt *testing.T) {
+			url := "http://localhost:8000/user/auth?email=" + tc.email + "&pass=" + tc.pass
+			req := httptest.NewRequest("GET",url,nil)
+			w := httptest.NewRecorder()
+
+			users := resources.AllUsers{Users: []resources.User{
+				{
+					Email: "ss@gmail.com",
+					Pass:  "ss",
+				}}}
+			WriteInfoToFile("users.json",users)
+
+			AuthenticateUser(w,req)
+
+			resp := w.Result()
+			body,_ := ioutil.ReadAll(resp.Body)
+			bodyStr := string(body)
+			if bodyStr != tc.answer{
+				tt.Errorf("expected %v, get - %v",tc.answer,bodyStr)
+			}
+			err := os.Remove("users.json")
+			if err != nil {
+				return
+			}
+		})
 	}
 }
