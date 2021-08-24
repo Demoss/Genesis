@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"genesis/pkg/resources"
+	"log"
 	"net/http"
 )
 
@@ -18,8 +19,8 @@ func (c *Connector) GetBTC() *resources.ResponceBTC {
 
 	res, err := http.Get("https://api.cryptonator.com/api/ticker/btc-uah")
 	if err != nil {
-		fmt.Println("Failed")
-		return nil
+		log.Fatal("Failed")
+
 	}
 
 	var resp resources.ResponceBTC
@@ -30,7 +31,7 @@ func (c *Connector) GetBTC() *resources.ResponceBTC {
 
 	err = res.Body.Close()
 	if err != nil {
-		return nil
+		log.Fatal(err)
 	}
 	return &resp
 

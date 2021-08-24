@@ -1,15 +1,12 @@
 package resources
 
-type Ticker struct{
-	Base string `json:"base"`
+type Ticker struct {
+	Base   string `json:"base"`
 	Target string `json:"target"`
-	Price string `json:"price"`
-	Volume string `json:"volume"`
-	Change string `json:"change"`
+	Price  string `json:"price"`
 }
 type ResponceBTC struct {
-	Ticker Ticker `json:"ticker"`
-	Timestamp uint64 `json:"timestamp"`
-	Success bool `json:"success"`
-	Err string `json:"err"`
+	Ticker  Ticker `json:"ticker"`
+	Success bool   `json:"success"`
+	Err     string `json:"err"`
 }
