@@ -1,36 +1,16 @@
 package main
 
 import (
-	"flag"
 	"genesis/global"
 	"genesis/internal/api"
-	"genesis/internal/server"
-	"github.com/BurntSushi/toml"
-	"log"
+	"genesis/pkg/logging"
 	"net/http"
 )
 
-var (
-	configPath string
-)
-
-func init() {
-	flag.StringVar(&configPath, "config-path", "configs/server.toml", "path to config file")
-}
-
 func main() {
-	flag.Parse()
+	logger := logging.GetLogger()
 
-	config := server.NewConfig()
-	_, err := toml.DecodeFile(configPath, config)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	s := server.New(config)
-	if err := s.Start(); err != nil {
-		log.Fatal(err)
-	}
+	logger.Info("create router")
 	r := api.NewRouter()
 
 	if global.Logged == 0 {
@@ -39,6 +19,7 @@ func main() {
 		r = api.NewRouter()
 	}
 
+	logger.Info("start server")
 	http.ListenAndServe(":8000", r)
 
 }

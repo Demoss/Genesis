@@ -3,16 +3,18 @@ package pkg
 import (
 	"encoding/json"
 	"fmt"
+	"genesis/pkg/logging"
 	"genesis/pkg/resources"
 	"log"
 	"net/http"
 )
 
 type Connector struct {
+	logger *logging.Logger
 }
 
 func NewConnector() *Connector {
-	return &Connector{}
+	return &Connector{logger: logging.GetLogger()}
 }
 
 func (c *Connector) GetBTC() *resources.ResponceBTC {
@@ -23,6 +25,7 @@ func (c *Connector) GetBTC() *resources.ResponceBTC {
 
 	}
 
+	c.logger.Info("getting BTC")
 	var resp resources.ResponceBTC
 	err = json.NewDecoder(res.Body).Decode(&resp)
 	if err != nil {
@@ -33,6 +36,7 @@ func (c *Connector) GetBTC() *resources.ResponceBTC {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	return &resp
 
 }

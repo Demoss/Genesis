@@ -7,50 +7,11 @@ import (
 	"genesis/global"
 	"genesis/pkg/resources"
 	"github.com/gorilla/schema"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"log"
 	"net/http"
-
 	"regexp"
 )
-
-type Server struct {
-	config *Config
-	logger *logrus.Logger
-}
-
-func New(config *Config) *Server {
-	return &Server{
-		config: config,
-		logger: logrus.New(),
-	}
-}
-
-func (s *Server) Start() error {
-	if err := s.configureLogger(); err != nil {
-		return err
-	}
-
-	s.logger.Info("Starting server")
-
-	return nil
-}
-
-func (s *Server) configureLogger() error {
-	level, err := logrus.ParseLevel(s.config.LogLevel)
-	if err != nil {
-		return err
-	}
-
-	s.logger.SetLevel(level)
-	return nil
-}
-
-type IServer interface {
-	AddNewUser(u resources.User) error
-	CheckIsUserCreated(user resources.User, users resources.AllUsers) bool
-}
 
 func ReadInfoFromFile(path string) ([]byte, error) {
 	rawDataIn, err := ioutil.ReadFile(path)
