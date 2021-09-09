@@ -47,7 +47,7 @@ func main() {
 	g.GET("/:a", func(ctx *gin.Context) {
 		a := ctx.Param("a")
 		req := &api.URL{X: a}
-
+		//
 		if response, err := client.GetBTC(ctx, req); err == nil {
 			ctx.JSON(http.StatusOK, gin.H{"result": fmt.Sprintf(response.Response)})
 		} else {
