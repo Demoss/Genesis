@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"genesis/global"
+	"genesis/pkg/logging"
 	"genesis/pkg/resources"
 	"github.com/gorilla/schema"
 	"io/ioutil"
@@ -12,6 +13,14 @@ import (
 	"net/http"
 	"regexp"
 )
+
+type Server struct {
+	logger *logging.Logger
+}
+
+func (s *Server) NewServer() *Server {
+	return &Server{logger: logging.GetLogger()}
+}
 
 func ReadInfoFromFile(path string) ([]byte, error) {
 	rawDataIn, err := ioutil.ReadFile(path)
@@ -51,8 +60,6 @@ func AddNewUser(user resources.User) error {
 		println(err)
 	}
 
-	user = resources.User{user.Email, user.Pass}
-
 	is := CheckIsUserCreated(user, AllUsers)
 
 	if is == true {
@@ -68,12 +75,12 @@ func AddNewUser(user resources.User) error {
 
 }
 
-func valid(e string) bool {
+func Valid(e string) bool {
 	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
 	return emailRegex.MatchString(e)
 }
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("context-type", "application/json")
 
@@ -85,16 +92,16 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !ok2 || len(keys2[0]) == 0 {
-		log.Println("Url Password is missing")
+		log.Print("Url Password is missing")
 		w.Write([]byte("Please check params spelling"))
 		return
 	}
 
 	key1 := keys1[0]
-	if valid(key1) {
+	if Valid(key1) {
 		key2 := keys2[0]
 
-		log.Println("Email " + string(key1) + " and pass " + string(key2))
+		log.Printf("Email  %s and pass %s", key1, key2)
 
 		var decoder = schema.NewDecoder()
 
@@ -102,7 +109,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 		err := decoder.Decode(&user, r.URL.Query())
 		if err != nil {
-			log.Println(err)
+			s.logger.Println(err)
 			return
 		}
 
@@ -120,22 +127,22 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
+func (s *Server) AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 	var AllUsers resources.AllUsers
 
 	rawDataIn, err := ReadInfoFromFile("users.json")
 
 	err = json.Unmarshal(rawDataIn, &AllUsers)
 	if err != nil {
-		log.Println(err)
+		s.logger.Info(err)
 	}
 	keys1, ok1 := r.URL.Query()["email"]
 	keys2, ok2 := r.URL.Query()["pass"]
 	if !ok1 || len(keys1[0]) < 1 {
-		log.Println("Url Email 'key' is missing")
+		s.logger.Info("Url Email 'key' is missing")
 	}
 	if !ok2 || len(keys2[0]) < 1 {
-		log.Println("Url Password 'key' is missing")
+		s.logger.Info("Url Password 'key' is missing")
 	}
 
 	var decoder = schema.NewDecoder()

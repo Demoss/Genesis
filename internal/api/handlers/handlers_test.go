@@ -15,18 +15,21 @@ func TestConnector_GetBTC(t *testing.T) {
 		response bool
 		url      string
 		user     resources.User
+		s        server.Server
 	}{
 		{
 			name:     "all right",
 			response: true,
 			url:      "https://api.cryptonator.com/api/ticker/btc-uah",
 			user:     resources.User{Email: "ss@gmail.com", Pass: "ss"},
+			s:        server.Server{},
 		},
 		{
 			name:     "fail to connect",
 			response: false,
 			url:      "https://api.cryptonator.com/api/ticker/btc-uah1",
 			user:     resources.User{Email: "ss@gmail.com", Pass: "ss"},
+			s:        server.Server{},
 		},
 	}
 	for _, tc := range test {
@@ -44,7 +47,7 @@ func TestConnector_GetBTC(t *testing.T) {
 				return
 			}
 
-			server.AuthenticateUser(wr, reqt)
+			tc.s.AuthenticateUser(wr, reqt)
 
 			bit := pkg.NewConnector()
 

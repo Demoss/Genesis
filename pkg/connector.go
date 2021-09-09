@@ -32,11 +32,11 @@ func (c *Connector) GetBTC() *resources.ResponceBTC {
 		fmt.Println(err)
 	}
 
-	err = res.Body.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	err = res.Body.Close()
 	return &resp
 
 }

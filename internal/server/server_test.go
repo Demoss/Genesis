@@ -59,14 +59,12 @@ func TestServer_CheckIsUserCreated(t *testing.T) {
 	}
 }
 
-
-
 func TestAddNewUser(t *testing.T) {
-	tests := []struct{
-		name string
-		user resources.User
+	tests := []struct {
+		name  string
+		user  resources.User
 		users resources.AllUsers
-		err error
+		err   error
 	}{
 		{
 			name: "all right",
@@ -99,9 +97,9 @@ func TestAddNewUser(t *testing.T) {
 			err: errors.New("user is already exist"),
 		},
 	}
-	for _,tc := range tests {
+	for _, tc := range tests {
 		t.Run(tc.name, func(tt *testing.T) {
-			
+
 			WriteInfoToFile("users.json", tc.users)
 
 			erro := AddNewUser(tc.user)
@@ -118,56 +116,58 @@ func TestAddNewUser(t *testing.T) {
 }
 
 func TestCreateUser(t *testing.T) {
-	tests := []struct{
-		name string
-		email string
-		pass string
+	tests := []struct {
+		name   string
+		email  string
+		pass   string
 		answer string
 	}{
 		{
-			name: "all right",
-			email: "ss@gmail.com",
-			pass: "ss",
+			name:   "all right",
+			email:  "ss@gmail.com",
+			pass:   "ss",
 			answer: "User successfully created",
 		},
 		{
-			name: "user is already exist",
-			email: "ss@gmail.com",
-			pass: "ss",
+			name:   "user is already exist",
+			email:  "ss@gmail.com",
+			pass:   "ss",
 			answer: "User is already exist",
 		},
 		{
-			name: "missing email",
-			email: "",
-			pass: "ss",
+			name:   "missing email",
+			email:  "",
+			pass:   "ss",
 			answer: "Please check params spelling",
 		},
 		{
-			name: "missing pass",
-			email: "ss@gmail.com",
-			pass: "",
+			name:   "missing pass",
+			email:  "ss@gmail.com",
+			pass:   "",
 			answer: "Please check params spelling",
 		},
 		{
-			name: "not valid email",
-			email: ".com",
-			pass: "ss",
+			name:   "not valid email",
+			email:  ".com",
+			pass:   "ss",
 			answer: "Incorrect email",
 		},
 	}
-	for _,tc := range tests{
+	for _, tc := range tests {
 		t.Run(tc.name, func(tt *testing.T) {
 			url := "http://localhost:8000/user/create?email=" + tc.email + "&pass=" + tc.pass
-			req := httptest.NewRequest("GET",url,nil)
+			req := httptest.NewRequest("GET", url, nil)
 			w := httptest.NewRecorder()
 
-			CreateUser(w,req)
+			s := Server{}
+			s.NewServer()
+			s.CreateUser(w, req)
 
 			resp := w.Result()
-			body,_ := ioutil.ReadAll(resp.Body)
+			body, _ := ioutil.ReadAll(resp.Body)
 			bodyStr := string(body)
-			if bodyStr != tc.answer{
-				tt.Errorf("expected %v, get - %v",tc.answer,bodyStr)
+			if bodyStr != tc.answer {
+				tt.Errorf("expected %v, get - %v", tc.answer, bodyStr)
 			}
 		})
 	}
@@ -178,30 +178,30 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestAuthenticateUser(t *testing.T) {
-	tests := []struct{
-		name string
-		email string
-		pass string
+	tests := []struct {
+		name   string
+		email  string
+		pass   string
 		answer string
 	}{
 
 		{
-			name: "all right",
-			email: "ss@gmail.com",
-			pass: "ss",
+			name:   "all right",
+			email:  "ss@gmail.com",
+			pass:   "ss",
 			answer: "You are logged in",
 		},
 		{
-			name: "fail",
-			email: "sss@gmail.com",
-			pass: "ss",
+			name:   "fail",
+			email:  "sss@gmail.com",
+			pass:   "ss",
 			answer: "User doesn't exist",
 		},
 	}
-	for _,tc := range tests{
+	for _, tc := range tests {
 		t.Run(tc.name, func(tt *testing.T) {
 			url := "http://localhost:8000/user/auth?email=" + tc.email + "&pass=" + tc.pass
-			req := httptest.NewRequest("GET",url,nil)
+			req := httptest.NewRequest("GET", url, nil)
 			w := httptest.NewRecorder()
 
 			users := resources.AllUsers{Users: []resources.User{
@@ -209,15 +209,16 @@ func TestAuthenticateUser(t *testing.T) {
 					Email: "ss@gmail.com",
 					Pass:  "ss",
 				}}}
-			WriteInfoToFile("users.json",users)
-
-			AuthenticateUser(w,req)
+			WriteInfoToFile("users.json", users)
+			s := Server{}
+			s.NewServer()
+			s.AuthenticateUser(w, req)
 
 			resp := w.Result()
-			body,_ := ioutil.ReadAll(resp.Body)
+			body, _ := ioutil.ReadAll(resp.Body)
 			bodyStr := string(body)
-			if bodyStr != tc.answer{
-				tt.Errorf("expected %v, get - %v",tc.answer,bodyStr)
+			if bodyStr != tc.answer {
+				tt.Errorf("expected %v, get - %v", tc.answer, bodyStr)
 			}
 			err := os.Remove("users.json")
 			if err != nil {

@@ -5,7 +5,7 @@ package api;
 option go_package = "./";
 
 message UserRequest{
-  string name = 1;
+  string email = 1;
   string pass = 2;
 }
 
@@ -13,7 +13,13 @@ message UserResponse{
   string response = 1;
 }
 
+message URL{
+  string x = 1;
+}
+
 service CreateUser{
-  rpc Create(UserRequest) returns (UserResponse){}
+  rpc Create(UserRequest) returns (UserResponse);
+  rpc Auth(UserRequest) returns (UserResponse);
+  rpc GetBTC(URL) returns (UserResponse);
 }
 

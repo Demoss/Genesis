@@ -8,8 +8,10 @@ import (
 
 func NewRouter() chi.Router {
 	r := chi.NewRouter()
+	s := server.Server{}
+	s.NewServer()
 	r.Get("/btc", handlers.GetBTC)
-	r.Get("/user/create", server.CreateUser)
-	r.Get("/user/auth", server.AuthenticateUser)
+	r.Get("/user/create", s.CreateUser)
+	r.Get("/user/auth", s.AuthenticateUser)
 	return r
 }
