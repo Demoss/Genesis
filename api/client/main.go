@@ -20,9 +20,9 @@ func main() {
 	g := gin.Default()
 	g.GET("/auth", func(ctx *gin.Context) {
 
-		a := ctx.Query("email")
-		b := ctx.Query("pass")
-		req := &api.UserRequest{Email: a, Pass: b}
+		email := ctx.Query("email")
+		pass := ctx.Query("pass")
+		req := &api.UserRequest{Email: email, Pass: pass}
 
 		if response, err := client.Auth(ctx, req); err == nil {
 			ctx.JSON(http.StatusOK, gin.H{"result": fmt.Sprint(response.Response)})
@@ -31,7 +31,7 @@ func main() {
 		}
 	})
 
-	g.GET("/create/email=:a/pass=:b", func(ctx *gin.Context) {
+	g.GET("/create", func(ctx *gin.Context) {
 		a := ctx.Param("email")
 		b := ctx.Param("pass")
 

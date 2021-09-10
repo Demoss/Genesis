@@ -126,6 +126,9 @@ func (s *Server) Auth(ctx context.Context, req *api.UserRequest) (*api.UserRespo
 }
 
 func (s *Server) GetBTC(ctx context.Context, req *api.URL) (*api.UserResponse, error) {
+	if req.GetX() != "btc" {
+		return &api.UserResponse{Response: "page not found"}, nil
+	}
 	con := pkg.NewConnector()
 	if global.Logged == 1 {
 		resp := con.GetBTC()
