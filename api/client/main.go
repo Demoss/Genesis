@@ -18,7 +18,7 @@ func main() {
 	client := api.NewCreateUserClient(conn)
 
 	g := gin.Default()
-	g.GET("/auth", func(ctx *gin.Context) {
+	g.GET("/user/auth", func(ctx *gin.Context) {
 
 		email := ctx.Query("email")
 		pass := ctx.Query("pass")
@@ -31,7 +31,7 @@ func main() {
 		}
 	})
 
-	g.GET("/create", func(ctx *gin.Context) {
+	g.GET("/user/create", func(ctx *gin.Context) {
 		a := ctx.Param("email")
 		b := ctx.Param("pass")
 
