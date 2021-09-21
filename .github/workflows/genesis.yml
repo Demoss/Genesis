@@ -1,0 +1,13 @@
+name: last homework(
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'testing project'
+        run: go test ./...
