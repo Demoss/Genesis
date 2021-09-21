@@ -3,7 +3,7 @@ name: last homework(
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   test-job:
