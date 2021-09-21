@@ -19,7 +19,7 @@ func TestServer_CheckIsUserCreated(t *testing.T) {
 	}{
 		{
 			name: "all right",
-			user: resources.User{Email: "ss@gmail.com", Pass: "ss"},
+			user: resources.User{Email: "sss@gmail.com", Pass: "ss"},
 			users: resources.AllUsers{Users: []resources.User{
 				{
 					Email: "sss@gmail.com",
