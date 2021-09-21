@@ -17,4 +17,4 @@ jobs:
           go-version: '^1.13.1'
 
       - name: testing project
-        run: go test genesis/internal/api/handlers
+        run: go test ./...
